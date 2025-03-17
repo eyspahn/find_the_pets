@@ -112,6 +112,17 @@ def correct_breednames(df: pl.DataFrame) -> pl.DataFrame:
 #     pass
 
 
+# def clean_up_json():
+#     """just copying in code here"""
+
+# clean_json = zipsjson.copy()
+
+# # iterate through features & add id element to clean_json
+# for i, entry in enumerate(zipsjson.get('features')):
+#     clean_json['features'][i]['id'] = entry.get('properties').get('zipcode')
+
+#     pass
+
 if __name__=='__main__':
 
     df = read_in_dog_licenses(filename)
