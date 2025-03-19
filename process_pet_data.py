@@ -1,3 +1,8 @@
+""" Process pet data into a cleaner form, using polars
+Possible TODO: Use polars expressions as in 
+https://kevinheavey.github.io/modern-polars/method_chaining.html#extract-city-names
+"""
+
 from pathlib import Path
 import polars as pl
 from datetime import datetime, timedelta
@@ -6,7 +11,7 @@ from datetime import datetime, timedelta
 filename = 'Seattle_Pet_Licenses_20250304.csv'
 
 def read_in_dog_licenses(filename) -> pl.DataFrame:
-    filepath = Path.cwd().joinpath(filename)
+    filepath = Path.cwd().joinpath('data').joinpath(filename)
     return pl.read_csv(filepath).filter(pl.col("Species")=="Dog")
 
 def process_datetime(df) -> pl.DataFrame:
@@ -55,11 +60,8 @@ def process_breed_cols(df: pl.DataFrame) -> pl.DataFrame:
     return df
 
 
-
-
 # df.group_by(pl.col('License Number')).len().sort(by='len')
 # data looks good, a possible TODO: add an assert or filter out any dupes (take the most recent license)
-
 
 
 def correct_breednames(df: pl.DataFrame) -> pl.DataFrame:
@@ -68,9 +70,6 @@ def correct_breednames(df: pl.DataFrame) -> pl.DataFrame:
     There are some entries with multiple commas: e.g. "terrier, fox, toy" -> toy fox terrier
     So, reverse each list and join them
 
-    TODO: Use a polars expression as in 
-    https://kevinheavey.github.io/modern-polars/method_chaining.html#extract-city-names
-    TODO: figure out the right return_dtype to define in map_elements
     """
 
     return df.with_columns(pl.col("breed").str.to_lowercase()
@@ -137,6 +136,6 @@ if __name__=='__main__':
 
     df_cleaned = df_cleaned.sort(by=['zip', 'breed'])
     out_filename = 'seattle_dogs_single_breed.csv'
-    out_filepath = Path.cwd().joinpath(out_filename)
+    out_filepath = Path.cwd().joinpath('data').joinpath(out_filename)
 
     df_cleaned.write_csv(out_filepath)
